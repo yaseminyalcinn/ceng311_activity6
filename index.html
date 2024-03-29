@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Click Game</title>
+<style>
+    #button {
+        position: absolute;
+        width: 120px;
+        height: 50px;
+        background-color: rgb(64, 113, 203);
+        color: white;
+        text-align: center;
+        line-height: 50px;
+        cursor: pointer;
+        border-radius: 10px;
+        border: 2px solid black;
+    }
+    #message {
+        width: 300px;
+        height: 100px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: lightgray;
+        padding: 20px;
+        border-radius: 5px;
+        display: none;
+    }
+    #OKButton {
+        position: absolute;
+        right: 20px; 
+        top: 80%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        background-color: white;
+        border: 1px solid rgb(65, 172, 214);
+        padding: 5px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    #OKButton:hover {
+        background-color: rgb(94, 171, 202);
+    }
+</style>
+</head>
+<body>
+
+<button id="button">Click me</button>
+
+<div id="message">
+    <p id="messageText"></p>
+    <button id="OKButton">OK</button>
+</div>
+
+<script>
+    let button = document.getElementById("button");
+    let message = document.getElementById("message");
+    let messageText = document.getElementById("messageText");
+    let OKButton = document.getElementById("OKButton");
+    let level = 1;
+    let clicks = 0;
+    let timeoutId = null;
+    let gameInProgress = true;
+
+    button.addEventListener("mouseover", function() {
+        if (!gameInProgress) return;
+        let timeout = 500 - (level - 1) * 100;
+        if (timeout < 0) timeout = 0;
+        timeoutId = setTimeout(function() {
+            let maxWidth = window.innerWidth - 100;
+            let maxHeight = window.innerHeight - 50;
+            let newLeft = Math.random() * maxWidth;
+            let newTop = Math.random() * maxHeight;
+            button.style.marginLeft = newLeft + "px";
+            button.style.marginTop = newTop + "px";
+        }, timeout);
+    });
+
+    button.addEventListener("click", function() {
+        if (!gameInProgress) return; 
+        clearTimeout(timeoutId); 
+        let maxWidth = window.innerWidth - 100;
+        let maxHeight = window.innerHeight - 50;
+        let newLeft = Math.random() * maxWidth;
+        let newTop = Math.random() * maxHeight;
+        button.style.marginLeft = newLeft + "px";
+        button.style.marginTop = newTop + "px";
+        
+        clicks++;
+        if (clicks === 3) {
+            level++;
+            clicks = 0;
+            if (level > 6) {
+                messageText.textContent = "Congratulations! You've won the game!";
+                OKButton.style.display = "none";
+            } else {
+                messageText.textContent = "You are the winner. You can go next level " + level + ".";
+                OKButton.style.display = "block";
+            }
+            message.style.display = "block";
+            gameInProgress = false; 
+        }
+    });
+
+    OKButton.addEventListener("click", function() {
+        message.style.display = "none";
+        gameInProgress = true; 
+    });
+</script>
+
+</body>
+</html>
